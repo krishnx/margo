@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit an Event</title>
+</head>
+<body>
+    <div id="content_list">
+        # Populate events
+    </div>
+    <div class="fields">
+        <form method="post" name="add_event">
+            <label>Result</label>
+            <input type="text" name="edit_verb">
+            <br/>
+            <label>Event Type</label>
+            <input type="text" name="edit_event_type">
+            <br/>
+            <label>Event Custom Comments</label>
+            <input type="text" name="edit_comments">
+            <br/>
+            <input type="submit" name="submit">
+        </form>
+    </div>
+    <script src="{{ url_for('static', filename='jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='custom_form.js') }}"></script>
+    <script>
+        $(function(){
+            $("#content_list").hide();
+            $("input[name='submit']").on('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                not_filled_inputs = validate_inputs("edit_");
+                if (not_filled_inputs.length < 1) {
+                    $.ajax({
+                        url: '/edit_event_res',
+                        data: $('form').serialize(),
+                        type: 'PUT',
+                        success: function (response) {
+                            render_response(responses);
+                        },
+                        error: function (error) {
+                            render_response(error);
+                        }
+                    });
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

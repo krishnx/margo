@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Events</title>
+</head>
+<body>
+    <div class="content_list">
+        // All events data.
+    </div>
+    <script src="{{ url_for('static', filename='jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='custom_form.js') }}"></script>
+    <script>
+        $(function() {
+            $.ajax({
+                url: '/events',
+                data: $('form').serialize(),
+                type: 'POST',
+                success: function (response) {
+                    render_response(response);
+                },
+                error: function (error) {
+                    render_response(error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

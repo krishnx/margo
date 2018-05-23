@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Event</title>
+</head>
+<body>
+    <div class="main">
+        <div id="content_list">
+            # Populate events
+        </div>
+        <div class="fields">
+            <form method="post" name="add_event">
+                <label>Event name</label>
+                <input type="text" name="add_noun" />
+                <br/>
+                <label>Result</label>
+                <input type="text" name="add_verb">
+                <br/>
+                <label>Time</label>
+                <input type="datetime" name="add_time" />
+                <br/>
+                <label>Event Type</label>
+                <input type="text" name="add_event_type" />
+                <br/>
+                <label>Event Custom Comments</label>
+                <input type="text" name="add_comments" />
+                <br/>
+                <label>Name</label>
+                <input type="text" name="add_name" />
+                <br/>
+                <label>Role</label>
+                <input type="text" name="add_role" />
+                <hr/>
+                <input type="submit" name="submit" />
+            </form>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='custom_form.js') }}"></script>
+    <script>
+        function validate_inputs() {
+            empty = [];
+            $('input[name^="add_"]').each(function () {
+                var i = $(this).val().trim();
+                if (!i) {
+                    name = $(this).attr('name').replace('add_', '');
+                    empty.push(name);
+                }
+            });
+
+            return empty;
+        }
+        $(function(){
+            $("#content_list").hide();
+            $("input[name='submit']").on('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                not_filled_inputs = validate_inputs("add_");
+                if (not_filled_inputs.length < 1) {
+                    $.ajax({
+                        url: '/add_event_res',
+                        data: $('form').serialize(),
+                        type: 'POST',
+                        success: function (response) {
+                            render_response(response);
+                        },
+                        error: function (error) {
+                            render_response(error);
+                        }
+                    });
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

@@ -20,3 +20,4 @@ templates/add.html : The HTML form to add events to the database.
 templates/edit.html : The HTML form to edit events to the database.
 templates/events.html : The list of all events.
 templates/index.html : The home page.
+events.sql : is the sql dump file. Load this file to create the database.

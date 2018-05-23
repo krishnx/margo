@@ -2,9 +2,22 @@ from flask import Flask, render_template, request, json
 from local_database import L_DAO
 import ConfigParser
 from logger_mod import Logger
+import os
 
 # Initialize the app
 app = Flask(__name__)
+
+# Send email
+def send_mail(sender, receiver, subject, message):
+    sendmail_location = "/usr/sbin/sendmail" # sendmail location
+    p = os.popen("%s -t" % sendmail_location, "w")
+    p.write("From: %s\n" % sender #"krishnachandra.sharma@margonetworks.com")
+    p.write("To: %s\n" % receiver # "krishnachandra.sharma@margonetworks.com")
+    p.write("Subject: %s\n" % subject)
+    p.write("\n") # blank line separating headers from body
+    p.write(message)
+    status = p.close()
+    Logger.logger.info('Email sent with status: {0}'.format(status))
 
 # Read from events data from events, data and user table.
 def get_events_data():
@@ -26,7 +39,12 @@ def validate_event_frequency(ts):
     '''.format(ts-time_interval, ts)
     res = d.execute_query(query)
     if res[0] > events_count:
+        send_mail("krishnachandra.sharma@margonetworks.com",
+                  "krishnachandra.sharma@margonetworks.com",
+                  "ALERT: subject",
+                  "Holy mother of GOD! Threshold reached. Alert! {0} events were updated within {1} minutes.".format(res[0], time_interval/60))
         Logger.logger.error("Alert! {0} events were updated within {1} minutes.".format(res[0], time_interval/60))
+        
 
 # The index page.
 @app.route("/")
